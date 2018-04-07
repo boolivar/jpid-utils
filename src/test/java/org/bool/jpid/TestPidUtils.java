@@ -49,6 +49,22 @@ public class TestPidUtils {
 		Assert.assertNull(PidUtils.getPid(new BaseTestProcess()));
 	}
 	
+	@Test
+	public void testCache() throws Exception {
+		LongValueAccessor accessor1 = PidUtils.getPidAccessor(TestPidProcess.class);
+		LongValueAccessor accessor2 = PidUtils.getPidAccessor(TestPidProcess.class);
+		Assert.assertSame(accessor1, accessor2);
+		
+		LongValueAccessor accessor3 = PidUtils.getPidAccessor(BaseTestProcess.class);
+		Assert.assertNotEquals(accessor1, accessor3);
+		
+		LongValueAccessor accessor4 = PidUtils.getPidAccessor(TestPidProcess.class);
+		Assert.assertNotSame(accessor3, accessor4);
+		Assert.assertNotSame(accessor1, accessor4);
+		
+		Assert.assertEquals(accessor1.getValue(new TestPidProcess()), accessor4.getValue(new TestPidProcess()));
+	}
+	
 	private static class TestPidProcess extends BaseTestProcess {
 		private Integer pid = 42;
 	}

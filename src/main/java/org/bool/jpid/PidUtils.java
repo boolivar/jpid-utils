@@ -3,9 +3,14 @@ package org.bool.jpid;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.util.AbstractMap;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.function.Function;
 
 public class PidUtils {
+	
+	private static volatile Map.Entry<Class<?>, LongValueAccessor> cache = null;
 	
 	public static Long getPid(Process process) throws IllegalAccessException {
 		LongValueAccessor pidAccessor = getPidAccessor(process.getClass());
@@ -15,15 +20,26 @@ public class PidUtils {
 		return null;
 	}
 	
-	private static LongValueAccessor getPidAccessor(Class<?> cls) {
-		LongValueAccessor pidAccessor = getValueAccessor(cls, "pid", FieldValueAccessor::new);
+	static LongValueAccessor getPidAccessor(Class<?> cls) {
+		Entry<Class<?>, LongValueAccessor> e = cache;
+		if (e != null && e.getKey() == cls) {
+			return e.getValue();
+		}
+		
+		LongValueAccessor accessor = createPidAccessor(cls);
+		cache = new AbstractMap.SimpleImmutableEntry<>(cls, accessor);
+		return accessor;
+	}
+	
+	private static LongValueAccessor createPidAccessor(Class<?> cls) {
+		LongValueAccessor pidAccessor = createValueAccessor(cls, "pid", FieldValueAccessor::new);
 		if (pidAccessor != null) {
 			return pidAccessor;
 		}
-		return getValueAccessor(cls, "handle", f -> new ProcessIdAccessor(new FieldValueAccessor(f)));
+		return createValueAccessor(cls, "handle", f -> new ProcessIdAccessor(new FieldValueAccessor(f)));
 	}
 	
-	private static LongValueAccessor getValueAccessor(Class<?> cls, String name, Function<Field, LongValueAccessor> accessorFactory) {
+	private static LongValueAccessor createValueAccessor(Class<?> cls, String name, Function<Field, LongValueAccessor> accessorFactory) {
 		Field field = findField(cls, name);
 		if (field != null) {
 			field.setAccessible(true);
