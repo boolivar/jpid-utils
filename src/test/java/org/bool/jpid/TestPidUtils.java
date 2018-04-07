@@ -35,26 +35,21 @@ public class TestPidUtils {
 	
 	@Test
 	public void testDeclaredFieldLookup() {
-		Assert.assertNotNull(PidUtils.getField(StringWriter.class, "buf"));
+		Assert.assertNotNull(PidUtils.findField(StringWriter.class, "buf"));
 	}
 	
 	@Test
 	public void testParentFieldLookup() {
-		Assert.assertNotNull(PidUtils.getField(StringWriter.class, "writeBuffer"));
+		Assert.assertNotNull(PidUtils.findField(StringWriter.class, "writeBuffer"));
 	}
 	
 	@Test
 	public void testProcessPid() throws IllegalAccessException {
-		Assert.assertEquals(Long.valueOf(300), PidUtils.getPid(new TestHandleProcess()));
 		Assert.assertEquals(Long.valueOf(42), PidUtils.getPid(new TestPidProcess()));
 		Assert.assertNull(PidUtils.getPid(new BaseTestProcess()));
 	}
 	
-	private static class TestHandleProcess extends BaseTestProcess {
-		private int handle = 300;
-	}
-	
-	private static class TestPidProcess extends TestHandleProcess {
-		private Long pid = 42L;
+	private static class TestPidProcess extends BaseTestProcess {
+		private Integer pid = 42;
 	}
 }

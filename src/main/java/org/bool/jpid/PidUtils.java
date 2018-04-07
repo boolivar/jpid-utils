@@ -3,27 +3,36 @@ package org.bool.jpid;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.util.function.Function;
 
 public class PidUtils {
 	
 	public static Long getPid(Process process) throws IllegalAccessException {
-		Field field = getPidField(process.getClass());
-		if (field != null) {
-			field.setAccessible(true);
-			return ((Number) field.get(process)).longValue();
+		LongValueAccessor pidAccessor = getPidAccessor(process.getClass());
+		if (pidAccessor != null) {
+			return pidAccessor.getValue(process);
 		}
 		return null;
 	}
 	
-	private static Field getPidField(Class<?> cls) {
-		Field field = getField(cls, "pid");
-		if (field != null) {
-			return field;
+	private static LongValueAccessor getPidAccessor(Class<?> cls) {
+		LongValueAccessor pidAccessor = getValueAccessor(cls, "pid", FieldValueAccessor::new);
+		if (pidAccessor != null) {
+			return pidAccessor;
 		}
-		return getField(cls, "handle");
+		return getValueAccessor(cls, "handle", f -> new ProcessIdAccessor(new FieldValueAccessor(f)));
 	}
 	
-	static Field getField(Class<?> cls, String name) {
+	private static LongValueAccessor getValueAccessor(Class<?> cls, String name, Function<Field, LongValueAccessor> accessorFactory) {
+		Field field = findField(cls, name);
+		if (field != null) {
+			field.setAccessible(true);
+			return accessorFactory.apply(field);
+		}
+		return null;
+	}
+	
+	static Field findField(Class<?> cls, String name) {
 		while (cls != null) {
 			try {
 				return cls.getDeclaredField(name);

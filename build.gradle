@@ -10,6 +10,8 @@ repositories {
 }
 
 dependencies {
-	compile 'org.slf4j:slf4j-api:1.7.25'
-	testCompile 'junit:junit:4.12'
+	implementation 'org.slf4j:slf4j-api:1.7.25'
+	implementation 'net.java.dev.jna:jna-platform:4.5.1'
+	
+	testImplementation 'junit:junit:4.12'
 }
