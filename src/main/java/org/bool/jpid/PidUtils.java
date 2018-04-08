@@ -3,33 +3,25 @@ package org.bool.jpid;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
-import java.util.function.Function;
 
 public class PidUtils {
 	
 	public static Long getPid(Process process) throws IllegalAccessException {
 		LongValueAccessor pidAccessor = getPidAccessor(process.getClass());
-		if (pidAccessor != null) {
-			return pidAccessor.getValue(process);
-		}
-		return null;
+		return pidAccessor.getValue(process);
 	}
 	
 	public static LongValueAccessor getPidAccessor(Class<? extends Process> cls) {
-		LongValueAccessor pidAccessor = createValueAccessor(cls, "pid", FieldValueAccessor::new);
-		if (pidAccessor != null) {
-			return pidAccessor;
-		}
-		return createValueAccessor(cls, "handle", f -> new ProcessIdAccessor(new FieldValueAccessor(f)));
-	}
-	
-	private static LongValueAccessor createValueAccessor(Class<?> cls, String name, Function<Field, LongValueAccessor> accessorFactory) {
-		Field field = findField(cls, name);
-		if (field != null) {
+		Field field;
+		if ((field = findField(cls, "pid")) != null) {
 			field.setAccessible(true);
-			return accessorFactory.apply(field);
+			return new FieldValueAccessor(field);
 		}
-		return null;
+		if ((field = findField(cls, "handle")) != null) {
+			field.setAccessible(true);
+			return new ProcessIdAccessor(new FieldValueAccessor(field));
+		}
+		throw new RuntimeException("Unsupported process class: " + cls);
 	}
 	
 	static Field findField(Class<?> cls, String name) {

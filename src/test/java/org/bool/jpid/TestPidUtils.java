@@ -43,10 +43,14 @@ public class TestPidUtils {
 		Assert.assertNotNull(PidUtils.findField(StringWriter.class, "writeBuffer"));
 	}
 	
+	@Test(expected=RuntimeException.class)
+	public void testUnsupportedProcessClass() throws IllegalAccessException {
+		PidUtils.getPid(new BaseTestProcess());
+	}
+	
 	@Test
 	public void testProcessPid() throws IllegalAccessException {
 		Assert.assertEquals(Long.valueOf(42), PidUtils.getPid(new TestPidProcess()));
-		Assert.assertNull(PidUtils.getPid(new BaseTestProcess()));
 	}
 	
 	private static class TestPidProcess extends BaseTestProcess {
