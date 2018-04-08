@@ -1,2 +1,10 @@
 language: java
 script: ./gradlew build
+deploy:
+  skip_cleanup: true
+  provider: bintray
+  file: "build/travis-deploy.json"
+  user: "boolivar"
+  key: ""
+  on:
+    branch: release/1.0
