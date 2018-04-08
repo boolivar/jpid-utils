@@ -1,9 +1,12 @@
 plugins {
 	id 'java-library'
+	id 'net.nemerosa.versioning' version '2.6.1'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+version = versioning.info.display
 
 repositories {
 	mavenCentral()
@@ -12,4 +15,36 @@ repositories {
 dependencies {
 	implementation 'net.java.dev.jna:jna-platform:4.5.1'
 	testImplementation 'junit:junit:4.12'
+}
+
+task travisDeploy {
+	doLast {
+		def now = java.time.LocalDate.now()
+		file("${buildDir}/travis-deploy.json").text = """
+		{
+			"package": {
+				"name": "${project.name}",
+				"repo": "java",
+				"subject": "boolivar",
+				"desc": "PID utils for Java",
+				"issue_tracker_url": "https://github.com/boolivar/jpid-utils/issues",
+				"vcs_url": "https://github.com/boolivar/jpid-utils",
+				"licenses": ["MIT"],
+				"labels": ["PID"],
+				"public_download_numbers": true,
+				"public_stats": true
+			},
+
+			"version": {
+				"name": "${version}",
+				"desc": "This is a version",
+				"released": "${now}",
+				"vcs_tag": "${version}"
+			},
+
+			"files":
+				[{"includePattern": "build/libs/(.*)", "uploadPattern": "${version}/\$1"}],
+			"publish": true
+		}"""
+	}
 }
