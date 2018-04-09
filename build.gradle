@@ -1,5 +1,6 @@
 plugins {
 	id 'java-library'
+	id 'maven'
 	id 'net.nemerosa.versioning' version '2.6.1'
 }
 
@@ -26,6 +27,14 @@ jar {
 	manifest {
 		attributes('Implementation-Title': project.name,
 				'Implementation-Version': project.version)
+	}
+}
+
+task writePom {
+	doLast {
+		pom {
+			writeTo("${buildDir}/libs/${project.name}-${version}.pom")
+		}
 	}
 }
 
@@ -65,9 +74,9 @@ task travisDeploy {
 			},
 
 			"files":
-				[{"includePattern": "build/libs/(.*)", "uploadPattern": "/org/bool/jpid/${version}/\$1"}],
+				[{"includePattern": "${buildDir}/libs/(.*)", "uploadPattern": "/org/bool/jpid/${version}/\$1"}],
 			"publish": true
 		}"""
 	}
-	dependsOn buildArchives
+	dependsOn([buildArchives, writePom])
 }
