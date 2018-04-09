@@ -74,7 +74,7 @@ task travisDeploy {
 			},
 
 			"files":
-				[{"includePattern": "${buildDir}/libs/(.*)", "uploadPattern": "/org/bool/jpid/${version}/\$1"}],
+				[{"includePattern": "${buildDir}/libs/(.*)", "uploadPattern": "/org/bool/jpid/jpid-utils/${version}/\$1"}],
 			"publish": true
 		}"""
 	}
