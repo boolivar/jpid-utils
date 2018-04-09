@@ -37,7 +37,6 @@ task travisDeploy {
 
 			"version": {
 				"name": "${version}",
-				"desc": "This is a version",
 				"released": "${now}",
 				"vcs_tag": "${version}"
 			},

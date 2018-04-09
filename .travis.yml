@@ -1,5 +1,6 @@
 language: java
-script: "./gradlew build"
+script: ./gradlew build
+before_deploy: ./gradlew travisDeploy
 deploy:
   skip_cleanup: true
   provider: bintray
