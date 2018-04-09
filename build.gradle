@@ -3,14 +3,14 @@ plugins {
 	id 'net.nemerosa.versioning' version '2.6.1'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
-
-version = versioning.info.display
-
 versioning {
 	branchEnv = ['TRAVIS_BRANCH']
 }
+
+version = versioning.info.display
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 repositories {
 	mavenCentral()
