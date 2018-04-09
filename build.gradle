@@ -7,6 +7,7 @@ versioning {
 	branchEnv = ['TRAVIS_BRANCH']
 }
 
+group = 'org.bool.jpid'
 version = versioning.info.display
 
 sourceCompatibility = 1.8
@@ -19,6 +20,24 @@ repositories {
 dependencies {
 	implementation 'net.java.dev.jna:jna-platform:4.5.1'
 	testImplementation 'junit:junit:4.12'
+}
+
+jar {
+	manifest {
+		attributes('Implementation-Title': project.name,
+				'Implementation-Version': project.version)
+	}
+}
+
+task sourceJar(type: Jar) {
+	group 'Build'
+	description 'Package source in jar'
+	from sourceSets.main.allSource
+	classifier 'sources'
+}
+
+artifacts {
+	archives sourceJar
 }
 
 task travisDeploy {
@@ -46,8 +65,9 @@ task travisDeploy {
 			},
 
 			"files":
-				[{"includePattern": "build/libs/(.*)", "uploadPattern": "${version}/\$1"}],
+				[{"includePattern": "build/libs/(.*)", "uploadPattern": "/org/bool/jpid/${version}/\$1"}],
 			"publish": true
 		}"""
 	}
+	dependsOn buildArchives
 }
