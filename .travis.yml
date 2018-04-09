@@ -1,10 +1,11 @@
 language: java
-script: ./gradlew build
+script: "./gradlew build"
 deploy:
   skip_cleanup: true
   provider: bintray
-  file: "build/travis-deploy.json"
-  user: "boolivar"
-  key: ""
+  file: build/travis-deploy.json
+  user: boolivar
+  key:
+    secure: D0l32z4Yq2cHuFcezSHE2/AQb3olPJVbFf8bk8pynrtaqBo0tP6EHsksBRSIu/qv2xwr5sI3TlHlk3dZQmnaHpKwh7yj7xBm7xxzE4h6SNvDu0/ly6dpzCXNWvAkpCz4W7RwZghgLxOJ1hn/YW4MxF8h4g1p3mNfrSVWlsCdnUSC92TEnjy5V0mFQDuqdkB6WeBAhv8QYUMnAG3SPxWg8SeOtInon9sqQtWhyzc0kOR+kpdsvlpcgxMe1FjP8OXoa/s6eZBPK25jMORCkjDhHXhfDtUEJysgUKiIWpiX5KKCh+Lbs6CSEZ7oOo67LcxDHQgDkALGwwJhssy34P7ioQloFwrrxFQtxmgIzoO73q/X3XRsiFWRnI9iluAmLkWXJEWw8sjyqx74PniGAkP7GQlmhLWcMkApCZwHg88Vw9txMYLtw+H0m1Wpa6p/1XgxkXZzhK15QWELaY1aoDNGkfCLv6Ffec3GcDz6GE5ngJxUUn03qKSd/1jsz2Gl9ymYa7rKNSP8PDWu1WIuO6Ts4ynDaUYBoj2WQWYE7L/aJIZHYvPHNS0/RmDPiUVfA8HmdEwy42eeHpQtF0rshHsQPIEIbAwJbn+H1Hw+VVG7ixFXZU0Sm9zVBzp+Bn+Yaq6EezDqv9vBGtZxsp061lesQF4b3QAQudnQxinSeaIlOvQ=
   on:
     branch: release/1.0
