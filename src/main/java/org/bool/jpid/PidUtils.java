@@ -3,12 +3,17 @@ package org.bool.jpid;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
+import java.util.Map;
 
 public class PidUtils {
 	
 	public static Long getPid(Process process) throws IllegalAccessException {
 		LongValueAccessor pidAccessor = getPidAccessor(process.getClass());
 		return pidAccessor.getValue(process);
+	}
+	
+	public static LongValueAccessor cache(Map<Class<? extends Process>, LongValueAccessor> map) {
+		return process -> map.computeIfAbsent(process.getClass(), PidUtils::getPidAccessor).getValue(process);
 	}
 	
 	public static LongValueAccessor getPidAccessor(Class<? extends Process> cls) {

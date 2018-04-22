@@ -1,6 +1,8 @@
 package org.bool.jpid;
 
 import java.io.StringWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -46,6 +48,18 @@ public class TestPidUtils {
 	@Test(expected=RuntimeException.class)
 	public void testUnsupportedProcessClass() throws IllegalAccessException {
 		PidUtils.getPid(new BaseTestProcess());
+	}
+	
+	@Test
+	public void testCache() throws IllegalAccessException {
+		Map<Class<? extends Process>, LongValueAccessor> map = new HashMap<>();
+		LongValueAccessor cache = PidUtils.cache(map);
+		
+		Assert.assertEquals(Long.valueOf(42), cache.getValue(new TestPidProcess()));
+		Assert.assertEquals(Long.valueOf(42), cache.getValue(new TestPidProcess()));
+		
+		Assert.assertEquals(1, map.size());
+		Assert.assertNotNull(map.get(TestPidProcess.class));
 	}
 	
 	@Test
