@@ -1,10 +1,7 @@
 language: java
 script: ./gradlew build
 before_deploy: ./gradlew travisDeploy
-after_success: ./gradlew sonarqube -Dsonar.projectKey=boolivar_jpid-utils \
-  -Dsonar.organization=boolivar \
-  -Dsonar.host.url=https://sonarcloud.io \
-  -Dsonar.login=c3e80ae6dc9a58d31348280feb3efeb86daef436
+after_success: ./gradlew sonarqube -Dsonar.projectKey=boolivar_jpid-utils -Dsonar.organization=boolivar -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=c3e80ae6dc9a58d31348280feb3efeb86daef436
 deploy:
   skip_cleanup: true
   provider: bintray
